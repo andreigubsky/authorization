@@ -1,0 +1,29 @@
+{
+  "name": "authorization",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andreigubsky/authorization.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andreigubsky/authorization/issues"
+  },
+  "homepage": "https://github.com/andreigubsky/authorization#readme",
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "express-json": "^1.0.0",
+    "express-validator": "^7.2.1",
+    "mongoose": "^8.16.0",
+    "nodemon": "^3.1.10"
+  }
+}
