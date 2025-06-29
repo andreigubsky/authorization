@@ -13,8 +13,7 @@ const generateAccessToken = (id,roles)=>{
     }
     return jwt.sign(
         payload, 
-        secret, 
-        {expiriesIn: '24h'});
+        secret);
 }
 class authController{
 
@@ -25,8 +24,6 @@ class authController{
                 return res.status(400).json({message:"Ошибка при регистрации", errors})
             }
             const {username, password} = req.body
-            console.log({username, password})
-/* не получаем из базы юзера*/
             const candidate = await User.findOne({username})
             console.log(candidate);
 
@@ -34,7 +31,8 @@ class authController{
                 return res.status(400).json({message:"Пользователь существует"})
             }
             const hashPassword = bcrypt.hashSync(password, 7)
-            const userRole = await User.findOne({value:'USER'})
+            console.log(hashPassword);
+            const userRole = await Role.findOne({value:'USER'})
             console.log(userRole);
             const user = new User({username, password: hashPassword, roles: [userRole.value]})
             await user.save()
@@ -46,18 +44,21 @@ class authController{
     }
     async login(req, res) {
         try {
-            const {username, password} = req.body
-            const user = await User.findOne({username})
-            if (user){
+            const {username, password} = req.body;
+            const user = await User.findOne({username});
+            
+            if (!user){
                 return res.status(400).json({message:`Пользователь ${username} не существует`})
             }
-            const validPassword = bcrypt.compareSync(password, user.password)
-            if (validPassword){
-                return res.status(400).json({message:`Пароль или пользователь не верный`})
+            
+            const validPassword = bcrypt.compareSync(password, user.password);
+            
+            if (!validPassword){  
+                return res.status(400).json({message:`Пароль неверный`})
             }
             const token = generateAccessToken(user._id, user.roles)
-            res.json("server work")
-            return res.json(token)
+            //res.json("server work")
+            return res.json({token})
         }
         catch (e) {
             console.log(e)
@@ -66,17 +67,19 @@ class authController{
     }
     async getUsers(req, res) {
         try {
-            /* const userRole = new Role()
+            /* 
+            Hardcode create roles and users
+            *
+            const userRole = new Role()
             const adminRole = new Role({value: 'ADMIN'})
             await userRole.save()
             await adminRole.save() 
             const userName = new User({username: '', password: '', roles: 'USER'})
-            await userName.save()*/
+            await userName.save()
+            */
 
             const users = await User.find()
             res.json(users)
-
-            res.json("server work")
         } catch (e) {
             console.log(e)
         }
